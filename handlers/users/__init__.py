@@ -1,5 +1,5 @@
-from .help import dp
-from .start import dp
-from .echo import dp
+from .help import dp  # noqa
+from .start import dp  # noqa
+from .echo import dp  # noqa
 
 __all__ = ["dp"]
