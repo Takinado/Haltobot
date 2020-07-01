@@ -5,27 +5,43 @@ from aiogram.dispatcher.filters import CommandStart, Text
 
 from data.config import CANCEL_CHOICES, TEST_DATA
 from loader import dp
-from aiogram.types import Message
-from keyboards.default.menu import markup_main, markup_cancel
+from aiogram.types import Message, ReplyKeyboardMarkup
+from keyboards.default.menu import (
+    markup_main,
+    markup_cancel,
+    markup_main_login,
+    markup_cancel_login,
+)
+from utils.db_api.models import session_class, Account
 from utils.site.parsing import get_data
 
 
 def get_markup_main(user_id):
     reply_markup = markup_main
-    # if Account.objects.filter(profile__external_id=user_id).first():
-    #     reply_markup = markup_main_login
-    # else:
-    #     reply_markup = markup_main
+    session = session_class()
+    if session.query(Account).join(Account.profile, aliased=True).filter_by(external_id=user_id).first():
+        reply_markup = markup_main_login
     return reply_markup
 
 
 def get_markup_cancel(user_id):
     reply_markup = markup_cancel
-    # if Account.objects.filter(profile__external_id=user_id).first():
-    #     reply_markup = markup_cancel_login
-    # else:
-    #     reply_markup = markup_cancel
+    session = session_class()
+    if session.query(Account).join(Account.profile, aliased=True).filter_by(external_id=user_id).first():
+        reply_markup = markup_cancel_login
     return reply_markup
+
+
+def get_accounts_markup(from_user_id):
+    accounts_markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+    session = session_class()
+    accounts = session.query(Account).join(Account.profile, aliased=True).filter_by(external_id=from_user_id)
+    # profile = Profile.get_profile(message.from_user.id)
+    # accounts = profile.get_accounts()
+    for account in accounts:
+        accounts_markup.add(account.account)
+    accounts_markup.add("Отмена")
+    return accounts_markup
 
 
 @dp.message_handler(CommandStart())

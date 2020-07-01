@@ -71,3 +71,25 @@ class Account(Base):
 
     def __repr__(self):
         return f'<Account(profile="{self.profile}", account="{self.account}")>'
+
+
+def get_account_from_profile(user_id, account):
+    session = session_class()
+    account = session.query(Account).filter_by(
+        account=account).join(Account.profile, aliased=True).filter_by(
+        external_id=user_id
+    ).first()
+    return account
+
+
+def remove_account(user_id, account):
+    session = session_class()
+    account = session.query(Account).filter_by(
+        account=account).join(Account.profile, aliased=True).filter_by(
+        external_id=user_id
+    ).first()
+    if account:
+        session.delete(account)
+        commit_session(session)
+        return True
+    return False
