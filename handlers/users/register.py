@@ -80,6 +80,7 @@ async def process_address_confirm(message: Message, state: FSMContext):
             session,
             Account,
             profile=profile,
+            address=data['address'],
             account=data['account'],
         )
         if account:
