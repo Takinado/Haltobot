@@ -45,7 +45,7 @@ async def send_welcome(message: Message):
 @dp.message_handler(Text(equals=CANCEL_CHOICES, ignore_case=True), state='*')
 async def cancel_handler(message: Message, state: FSMContext):
     """
-    Разрешает пользователь отменить любое действие
+    Разрешает пользователю отменить любое действие
     """
     current_state = await state.get_state()
     if current_state is None:
@@ -54,6 +54,14 @@ async def cancel_handler(message: Message, state: FSMContext):
     logging.info('Cancelling state %r', current_state)
     # Cancel state and inform user about it
     await state.finish()
+    await message.answer('Отменено.', reply_markup=get_markup_main(message.from_user.id))
+
+
+@dp.message_handler(Text(equals=CANCEL_CHOICES, ignore_case=True))
+async def cancel_to_start_handler(message: Message, state: FSMContext):
+    """
+    Разрешает пользователю отменить все и перейти в начало
+    """
     await message.answer('Отменено.', reply_markup=get_markup_main(message.from_user.id))
 
 

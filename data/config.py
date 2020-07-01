@@ -29,3 +29,10 @@ TEST_DATA = os.getenv('TEST_DATA')
 # Heroku need srt
 DAYS_AHEAD_FOR_SEARCH = int(os.getenv('DAYS_AHEAD_FOR_SEARCH', '3'))
 RANGE_DAYS_FOR_SEARCH_ADDRESS = (-48*7, 4*7)
+
+
+DB_USER = str(os.getenv('DB_USER'))
+DB_PASSWORD = str(os.getenv('DB_PASSWORD'))
+DB_HOST = str(os.getenv('DB_HOST', 'localhost'))
+DB_PORT = str(os.getenv('DB_PORT', '5432'))
+DB_NAME = str(os.getenv('DB_NAME'))

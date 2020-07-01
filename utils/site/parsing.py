@@ -1,8 +1,7 @@
 from datetime import date, timedelta
 from parsel import Selector
-
 import requests
-
+from typing import Tuple, List
 from data.config import RANGE_DAYS_FOR_SEARCH_ADDRESS, DAYS_AHEAD_FOR_SEARCH
 
 
@@ -14,7 +13,7 @@ def get_data(account: str, days: int = DAYS_AHEAD_FOR_SEARCH) -> list:
     return records
 
 
-def request_data(account: str, day_range: tuple) -> requests.Response:
+def request_data(account: str, day_range: Tuple[int, int]) -> requests.Response:
     """Получает данные с сайта"""
     url = 'https://ksoe.com.ua/disconnection/search/'
     date_from = date.today() + timedelta(days=day_range[0])
@@ -31,7 +30,7 @@ def request_data(account: str, day_range: tuple) -> requests.Response:
     return r
 
 
-def get_address(account: str, day_range: tuple = RANGE_DAYS_FOR_SEARCH_ADDRESS) -> str:
+def get_address(account: str, day_range: Tuple[int, int] = RANGE_DAYS_FOR_SEARCH_ADDRESS) -> str:
     """Получает адрес с сайта"""
     r = request_data(account, day_range)
 
@@ -42,7 +41,7 @@ def get_address(account: str, day_range: tuple = RANGE_DAYS_FOR_SEARCH_ADDRESS) 
             return address
 
 
-def get_raw_records(html: str) -> list:
+def get_raw_records(html: str) -> List[dict]:
     """Парсит HTML в записи отключений"""
     raw_records = []
     for tr in Selector(html).css('table.table-otkl tbody tr').extract():
@@ -58,7 +57,7 @@ def get_raw_records(html: str) -> list:
     return raw_records
 
 
-def adapt_records(raw_records: list) -> list:
+def adapt_records(raw_records: List[dict]) -> List[dict]:
     """Переводим ответ на русский"""
     records = []
     for record in raw_records:
