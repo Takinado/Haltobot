@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.ext.declarative import declarative_base
@@ -27,7 +29,7 @@ def commit_session(session):
         return True
     except DatabaseError as e:
         session.rollback()
-        print(e.orig.pgerror)
+        logging.error(e.orig.pgerror)
         return False
 
 
@@ -93,3 +95,9 @@ def remove_account(user_id, account):
         commit_session(session)
         return True
     return False
+
+
+def get_accounts_to_sending():
+    session = session_class()
+    accounts = session.query(Account).join(Account.profile, aliased=True)
+    return accounts
