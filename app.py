@@ -14,17 +14,12 @@ async def on_startup(dp):
     import middlewares
     filters.setup(dp)
     middlewares.setup(dp)
-
     await bot.set_webhook(WEBHOOK_URL)
-
     from utils.notify_admins import on_startup_notify
     await on_startup_notify(dp)
 
 
 async def on_shutdown(dp):
-    # await bot.close()
-    # await storage.close()
-
     logging.warning('Shutting down..')
     # insert code here to run it before shutdown
     # Remove webhook (not acceptable in some cases)
@@ -32,8 +27,6 @@ async def on_shutdown(dp):
     # Close DB connection (if used)
     await storage.close()
     await storage.wait_closed()
-    # await dp.storage.close()
-    # await dp.storage.wait_closed()
     logging.warning('Bye!')
 
 
@@ -45,16 +38,11 @@ async def periodic(sleep_for):
             records = get_data(account.account)
             for record in records:
                 await bot.send_message(account.profile.external_id,
-                                       f"{record['date']} {record['time']} {record['comment']}",
+                                       f"{record['date']} {record['time']}\n{account.address}\n{record['comment']}",
                                        disable_notification=True)
-                # await message.answer(' '.join([record['date'], record['time'], record['comment']]))
 
 if __name__ == '__main__':
-    from aiogram import executor
     from handlers import dp
-
-    # executor.start_polling(dp, on_startup=on_startup, on_shutdown=on_shutdown)
-
     dp.loop.create_task(periodic(NOTIF_PERIOD))
     start_webhook(
         dispatcher=dp,
@@ -65,6 +53,3 @@ if __name__ == '__main__':
         host=WEBAPP_HOST,
         port=WEBAPP_PORT,
     )
-
-
-
