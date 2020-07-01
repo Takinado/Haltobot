@@ -7,7 +7,7 @@ from data.config import RANGE_DAYS_FOR_SEARCH_ADDRESS, DAYS_AHEAD_FOR_SEARCH
 
 def get_data(account: str, days: int = DAYS_AHEAD_FOR_SEARCH) -> list:
     """Получает данные для оповещения"""
-    r = request_data(account, (-30, days))
+    r = request_data(account, (0, days))
     raw_records = get_raw_records(r.text)
     records = adapt_records(raw_records)
     return records
