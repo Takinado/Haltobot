@@ -7,10 +7,10 @@ from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey, crea
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.sql import expression
 
-from data.config import DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME
+from data.config import DATABASE_URL
 
 Base = declarative_base()
-engine = create_engine(f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}')
+engine = create_engine(DATABASE_URL)
 session_class = sessionmaker(bind=engine)
 
 

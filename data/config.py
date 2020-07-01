@@ -39,6 +39,7 @@ DB_PASSWORD = str(os.getenv('DB_PASSWORD'))
 DB_HOST = str(os.getenv('DB_HOST', 'localhost'))
 DB_PORT = str(os.getenv('DB_PORT', '5432'))
 DB_NAME = str(os.getenv('DB_NAME'))
+DATABASE_URL = str(os.getenv('DATABASE_URL', f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'))
 
 PROJECT_NAME = 'haltobot-bot'
 
@@ -48,3 +49,5 @@ WEBHOOK_URL = urljoin(WEBHOOK_HOST, WEBHOOK_URL_PATH)
 
 WEBAPP_HOST = '0.0.0.0'  # Слушаем все подключения к нашему приложению
 WEBAPP_PORT = os.environ.get('PORT', '5000')
+
+
