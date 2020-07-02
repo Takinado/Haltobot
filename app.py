@@ -22,7 +22,7 @@ async def on_startup(dp):
         BotCommand(command='/start', description='Начать'),
         BotCommand(command='/help', description='Получить справку'),
         BotCommand(command='/register', description='Регистрация'),
-        BotCommand(command='/new', description='Получить данные по отключения сейчас'),
+        BotCommand(command='/now', description='Получить данные по отключениям сейчас'),
     ]
     await bot.set_my_commands(commands)
 

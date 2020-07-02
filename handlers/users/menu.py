@@ -50,7 +50,7 @@ async def send_welcome(message: Message):
         '/start - Начать',
         '/help - Получить справку',
         '/register - Регистрация',
-        '/new - Получить данные по отключения сейчас',
+        '/now - Получить данные по отключениям сейчас',
 
     ]
     await message.answer('\n'.join(text), reply_markup=get_markup_main(message.from_user.id))
