@@ -51,7 +51,7 @@ class Profile(Base):
     # TODO Need to refactoring to string
     external_id = Column(Integer)
 
-    name = Column(String(60))
+    name = Column(String(60), nullable=True)
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
 
@@ -63,7 +63,7 @@ class Account(Base):
     __tablename__ = 'client_account'
     id = Column(Integer, primary_key=True)
     profile_id = Column(ForeignKey('client_profile.id'), nullable=False, index=True)
-    account = Column(String(8), nullable=True)
+    account = Column(String(8))
     address = Column(String(120), nullable=True)
 
     created_at = Column(DateTime(timezone=True), default=func.now())
