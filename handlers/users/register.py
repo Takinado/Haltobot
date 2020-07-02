@@ -76,6 +76,8 @@ async def process_address_confirm(message: Message, state: FSMContext):
             external_id=message.from_user.id,
             name=message.from_user.username,
         )
+        if created:
+            commit_session(session)
         account, created = get_or_create(
             session,
             Account,
