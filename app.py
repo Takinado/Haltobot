@@ -1,6 +1,7 @@
 import asyncio
 import logging
 
+from aiogram.types import BotCommand
 from aiogram.utils.executor import start_webhook
 
 from data.config import WEBHOOK_URL_PATH, WEBAPP_HOST, WEBAPP_PORT, NOTIF_PERIOD, WEBHOOK_URL
@@ -17,6 +18,13 @@ async def on_startup(dp):
     await bot.set_webhook(WEBHOOK_URL)
     from utils.notify_admins import on_startup_notify
     await on_startup_notify(dp)
+    commands = [
+        BotCommand(command='/start', description='Начать'),
+        BotCommand(command='/help', description='Получить справку'),
+        BotCommand(command='/register', description='Регистрация'),
+        BotCommand(command='/new', description='Получить данные по отключения сейчас'),
+    ]
+    await bot.set_my_commands(commands)
 
 
 async def on_shutdown(dp):
@@ -40,6 +48,7 @@ async def periodic(sleep_for):
                 await bot.send_message(account.profile.external_id,
                                        f"{record['date']} {record['time']}\n{account.address}\n{record['comment']}",
                                        disable_notification=True)
+
 
 if __name__ == '__main__':
     from handlers import dp

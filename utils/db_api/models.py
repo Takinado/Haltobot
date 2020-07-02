@@ -97,7 +97,12 @@ def remove_account(user_id, account):
     return False
 
 
-def get_accounts_to_sending():
+def get_accounts_to_sending(user_id=None):
     session = session_class()
-    accounts = session.query(Account).join(Account.profile, aliased=True)
+    if user_id:
+        accounts = session.query(Account).join(Account.profile, aliased=True).filter_by(
+            external_id=user_id
+        )
+    else:
+        accounts = session.query(Account).join(Account.profile, aliased=True)
     return accounts

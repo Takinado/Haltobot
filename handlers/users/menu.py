@@ -12,7 +12,7 @@ from keyboards.default.menu import (
     markup_main_login,
     markup_cancel_login,
 )
-from utils.db_api.models import session_class, Account
+from utils.db_api.models import session_class, Account, get_accounts_to_sending
 from utils.site.parsing import get_data
 
 
@@ -36,8 +36,6 @@ def get_accounts_markup(from_user_id):
     accounts_markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
     session = session_class()
     accounts = session.query(Account).join(Account.profile, aliased=True).filter_by(external_id=from_user_id)
-    # profile = Profile.get_profile(message.from_user.id)
-    # accounts = profile.get_accounts()
     for account in accounts:
         accounts_markup.add(account.account)
     accounts_markup.add("Отмена")
@@ -52,6 +50,8 @@ async def send_welcome(message: Message):
         '/start - Начать',
         '/help - Получить справку',
         '/register - Регистрация',
+        '/new - Получить данные по отключения сейчас',
+
     ]
     await message.answer('\n'.join(text), reply_markup=get_markup_main(message.from_user.id))
 
@@ -86,6 +86,19 @@ async def test(message: Message, state: FSMContext):
     records = get_data(TEST_DATA)
     if records:
         for record in records:
-            await message.answer(' '.join([record['date'], record['time'], record['comment']]))
+            await message.answer(f"{record['date']} {record['time']}\n{record['comment']}")
     else:
         await message.answer('Нет данных')
+
+
+@dp.message_handler(commands='now')
+async def now(message: Message, state: FSMContext):
+    """Получить данные по зарегистрированным счетам прямо сейчас"""
+    accounts = get_accounts_to_sending(message.from_user.id)
+    for account in accounts:
+        records = get_data(account.account)
+        if records:
+            for record in records:
+                await message.answer(f"{record['date']} {record['time']}\n{account.address}\n{record['comment']}")
+        else:
+            await message.answer('Нет данных')
